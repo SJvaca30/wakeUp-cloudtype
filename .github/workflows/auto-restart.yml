@@ -2,6 +2,7 @@ name: Auto Restart Server
 on:
   workflow_dispatch:
   schedule:
+    # 17시부터 22시(UTC)까지 매시 정각에 실행
     - cron: "0 17-22 * * *"
 
 jobs:
