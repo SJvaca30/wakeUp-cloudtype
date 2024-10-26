@@ -1,0 +1,31 @@
+name: Auto Restart Server
+on:
+  # 수동 실행을 위한 설정
+  workflow_dispatch:
+  # 자동 실행 스케줄 설정
+  schedule:
+    # 매일 새벽 4시 5분 실행 (UTC 19:05)
+    - cron: "5 19 * * *"
+
+jobs:
+  wake-up-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake up server
+        run: |
+          echo "Attempting to wake up server..."
+          curl -X GET ${{ secrets.SERVER_URL }}
+
+      - name: Check server status
+        run: |
+          echo "Checking server status..."
+          status_code=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.SERVER_URL }})
+          echo "Server responded with status code: $status_code"
+          if [ "$status_code" -eq 200 ] || [ "$status_code" -eq 302 ]; then
+            echo "Server is up and running!"
+          else
+            echo "Warning: Server might not be responding correctly"
+          fi
+
+
+          
