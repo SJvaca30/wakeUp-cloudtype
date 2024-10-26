@@ -1,11 +1,8 @@
 name: Auto Restart Server
 on:
-  # 수동 실행을 위한 설정
   workflow_dispatch:
-  # 자동 실행 스케줄 설정
   schedule:
-    # 매일 새벽 4시 5분 실행 (UTC 19:05)
-    - cron: "5 19 * * *"
+    - cron: "0 17-22 * * *"
 
 jobs:
   wake-up-server:
@@ -14,6 +11,7 @@ jobs:
       - name: Wake up server
         run: |
           echo "Attempting to wake up server..."
+          echo "Current time: $(date)"
           curl -X GET ${{ secrets.SERVER_URL }}
 
       - name: Check server status
@@ -26,6 +24,3 @@ jobs:
           else
             echo "Warning: Server might not be responding correctly"
           fi
-
-
-          
