@@ -5,23 +5,26 @@ on:
     # 17시부터 22시(UTC)까지 매시 정각에 실행
     - cron: "0 17-22 * * *"
 
+
 jobs:
-  wake-up-server:
+  restart-server:
     runs-on: ubuntu-latest
     steps:
-      - name: Wake up server
+      - name: Restart CloudType Server
         run: |
-          echo "Attempting to wake up server..."
+          echo "Attempting to restart server..."
           echo "Current time: $(date)"
-          curl -X GET ${{ secrets.SERVER_URL }}
+          response=$(curl -X PUT \
+            "${{ secrets.CLOUDTYPE_API_URL }}" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDTYPE_ACCESS_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -H "Origin: https://app.cloudtype.io" \
+            -H "Referer: https://app.cloudtype.io/")
+          echo "Response: $response"
 
-      - name: Check server status
+      - name: Verify Server Status
         run: |
-          echo "Checking server status..."
-          status_code=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.SERVER_URL }})
-          echo "Server responded with status code: $status_code"
-          if [ "$status_code" -eq 200 ] || [ "$status_code" -eq 302 ]; then
-            echo "Server is up and running!"
-          else
-            echo "Warning: Server might not be responding correctly"
-          fi
+          echo "Waiting for server to start..."
+          sleep 20  # 서버 시작 대기
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ secrets.SERVER_URL }}")
+          echo "Server status code: $STATUS"
