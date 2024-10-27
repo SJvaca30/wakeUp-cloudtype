@@ -5,7 +5,6 @@ on:
     # 17시부터 22시(UTC)까지 매시 정각에 실행
     - cron: "0 17-22 * * *"
 
-
 jobs:
   restart-server:
     runs-on: ubuntu-latest
