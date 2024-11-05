@@ -4,7 +4,7 @@ on:
   schedule:
     # 17시부터 22시(UTC)까지 매시 정각에 실행
     - cron: "0 17-22 * * *"
-
+    
 jobs:
   restart-server:
     runs-on: ubuntu-latest
@@ -20,10 +20,3 @@ jobs:
             -H "Origin: https://app.cloudtype.io" \
             -H "Referer: https://app.cloudtype.io/")
           echo "Response: $response"
-
-      - name: Verify Server Status
-        run: |
-          echo "Waiting for server to start..."
-          sleep 20  # 서버 시작 대기
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ secrets.SERVER_URL }}")
-          echo "Server status code: $STATUS"
